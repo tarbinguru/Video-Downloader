@@ -2,33 +2,41 @@
 <html lang="my">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MM Tok</title>
-    <style>
-        body { background: #121212; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
-        .input-box { width: 100%; max-width: 400px; padding: 15px; border-radius: 20px; border: none; margin-bottom: 10px; }
-        .btn { background: #ff4444; color: white; padding: 15px 30px; border-radius: 20px; border: none; cursor: pointer; }
-    </style>
+    <title>MM Tok - Downloader</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>MM <span>Tok</span></h1>
-    <input type="text" id="url" class="input-box" placeholder="Link ထည့်ပါ...">
-    <br><button class="btn" onclick="fetchVideo()">Download</button>
-    <div id="result" style="margin-top:20px;"></div>
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+    <div id="sideMenu" class="menu">
+        <a href="#" onclick="alert('Settings: Language, Privacy, About')">Settings</a>
+        <a href="#" onclick="alert('History: Coming Soon')">History</a>
+    </div>
+    
+    <div class="logo">MM <span>Tok</span></div>
+    <input type="text" id="url" placeholder="TikTok/YouTube Link...">
+    <button class="btn" onclick="fetchVideo()">Download</button>
+
+    <div id="result"></div>
+
+    <div class="social-icons">
+        <a href="https://tiktok.com">TikTok</a> | <a href="https://instagram.com">Insta</a> | 
+        <a href="https://facebook.com">FB</a> | <a href="https://youtube.com">YT</a>
+    </div>
 
     <script>
+        let count = 0;
+        const AD_LINK = "https://www.effectivecpmnetwork.com/xty6yh7g4z?key=7022e23017dbd223e0d1baa45cd4e219";
+
+        function toggleMenu() { document.getElementById('sideMenu').style.width = '250px'; }
+        
         async function fetchVideo() {
+            count++;
+            if(count === 1 || count % 3 === 0) window.open(AD_LINK, "_blank");
+            
             const url = document.getElementById('url').value;
-            const res = await fetch('/download', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({url})
-            });
+            const res = await fetch('/download', { method: 'POST', body: JSON.stringify({url}), headers: {'Content-Type': 'application/json'} });
             const data = await res.json();
-            if(data.error) alert("Error: " + data.error);
-            else document.getElementById('result').innerHTML = `
-                <img src="${data.thumbnail}" width="200" style="border-radius:10px;"><br>
-                <a href="${data.url}" download class="btn" style="display:inline-block; margin-top:10px;">Download Now</a>
-            `;
+            document.getElementById('result').innerHTML = `<img src="${data.thumbnail}" width="200"><br><a href="${data.url}" download class="btn">Download Now</a>`;
         }
     </script>
 </body>
