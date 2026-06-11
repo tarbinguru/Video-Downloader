@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Downloader</title>
+    <style>
+        body { font-family: Arial; max-width: 600px; margin: 40px auto; padding: 20px; background: #f5f5f5; }
+        h1 { color: #333; text-align: center; }
+        input { width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #ff4444; color: white; border: none; border-radius: 8px; font-size: 16px; margin-top: 10px; cursor: pointer; }
+        #result { margin-top: 20px; background: white; padding: 15px; border-radius: 8px; display: none; }
+        .format-btn { background: #4444ff; margin-top: 8px; }
+        img { width: 100%; border-radius: 8px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h1>🎬 Video Downloader</h1>
+    <input type="text" id="urlInput" placeholder="TikTok / YouTube / Facebook link ထည့်ပါ">
+    <button onclick="getVideo()">🔍 ရှာပါ</button>
+    <div id="result">
+        <img id="thumbnail" src="" alt="thumbnail">
+        <p id="title"></p>
+        <div id="formats"></div>
+    </div>
+    <script>
+        async function getVideo() {
+            const url = document.getElementById('urlInput').value;
+            if (!url) return alert('Link ထည့်ပါ');
+            document.querySelector('button').innerText = '⏳ လုပ်နေတယ်...';
+            try {
+                const res = await fetch('/download', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({url})
+                });
+                const data = await res.json();
+                if (data.error) return alert('Error: ' + data.error);
+                document.getElementById('thumbnail').src = data.thumbnail;
+                document.getElementById('title').innerText = data.title;
+                const fmts = document.getElementById('formats');
+                fmts.innerHTML = '';
+                data.formats.forEach(f => {
+                    fmts.innerHTML += `<a href="${f.url}" target="_blank"><button class="format-btn">⬇️ Download (${f.quality || f.ext})</button></a>`;
+                });
+                document.getElementById('result').style.display = 'block';
+            } catch(e) {
+                alert('တစ်ခုခု မှားသွားတယ်');
+            }
+            document.querySelector('button').innerText = '🔍 ရှာပါ';
+        }
+    </script>
+</body>
+</html>
