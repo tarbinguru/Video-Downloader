@@ -1,6 +1,6 @@
-from flask import Flask, request, jsonify, render_template
-import yt_dlp
 import os
+from flask import Flask, render_template, request, jsonify
+import yt_dlp
 
 app = Flask(__name__)
 
@@ -10,37 +10,24 @@ def index():
 
 @app.route('/download', methods=['POST'])
 def download():
-    data = request.json
-    url = data.get('url')
-    
-    if not url:
-        return jsonify({'error': 'URL မထည့်ရသေးပါ'}), 400
-    
+    url = request.json.get('url')
     try:
+        # Video အချက်အလက်ယူရန် options
         ydl_opts = {
-            'quiet': True,
-            'no_warnings': True,
-            'extract_flat': False,
+            'format': 'best',
+            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
-            formats = []
-            for f in info.get('formats', []):
-                if f.get('url'):
-                    formats.append({
-                        'format_id': f.get('format_id'),
-                        'ext': f.get('ext'),
-                        'quality': f.get('format_note', ''),
-                        'url': f.get('url')
-                    })
             return jsonify({
                 'title': info.get('title'),
                 'thumbnail': info.get('thumbnail'),
-                'formats': formats[-5:]
+                'url': info.get('url') # တိုက်ရိုက် Video Link
             })
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
+    # Render အတွက် PORT ကို အလိုအလျောက်ယူမယ်
+    port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port)
