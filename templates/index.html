@@ -2,46 +2,53 @@
 <html lang="my">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MM Tok - Downloader</title>
+    <title>MM Tok</title>
     <style>
-        body { background: #121212; color: white; font-family: sans-serif; text-align: center; margin: 0; padding: 20px; }
-        .nav { display: flex; justify-content: space-between; padding: 10px; font-size: 24px; }
-        .logo { font-size: 28px; font-weight: bold; color: #ff4444; margin: 20px 0; }
-        input { width: 90%; max-width: 400px; padding: 15px; border-radius: 25px; border: none; background: #2a2a2a; color: white; }
-        .btn { background: #ff4444; padding: 15px 40px; border-radius: 25px; color: white; border: none; margin-top: 15px; cursor: pointer; }
-        .socials { margin-top: 30px; display: flex; justify-content: center; gap: 20px; }
-        .socials a { color: #fff; text-decoration: none; font-size: 14px; }
+        body { background: #121212; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
+        .menu-bar { text-align: left; font-size: 24px; cursor: pointer; }
+        .logo { font-size: 32px; font-weight: bold; margin: 30px 0; }
+        .logo span { color: #ff4444; }
+        input { width: 100%; max-width: 400px; padding: 15px; border-radius: 25px; border: none; background: #2a2a2a; color: white; }
+        .dl-btn { background: #ff4444; padding: 15px 40px; border-radius: 25px; border: none; color: white; margin-top: 15px; }
+        .socials { display: flex; justify-content: center; gap: 15px; margin-top: 40px; }
+        .history-item { margin: 10px; padding: 10px; background: #333; border-radius: 10px; }
     </style>
 </head>
 <body>
-    <div class="nav"><span>☰</span> <span>Settings</span></div>
+    <div class="menu-bar" onclick="alert('Settings: Language/Theme | About: MM Tok v1.0')">☰</div>
     <div class="logo">MM <span>Tok</span></div>
     
-    <input type="text" id="url" placeholder="TikTok/YouTube Link ထည့်ပါ...">
-    <br><button class="btn" onclick="process()">Download</button>
+    <input type="text" id="url" placeholder="TikTok/YouTube Link...">
+    <br><button class="dl-btn" onclick="fetchData()">Download</button>
 
     <div id="result" style="margin-top:20px;"></div>
 
     <div class="socials">
-        <a href="https://tiktok.com">TikTok</a>
-        <a href="https://instagram.com">Insta</a>
-        <a href="https://facebook.com">FB</a>
+        <a href="https://tiktok.com">TikTok</a> <a href="https://fb.com">FB</a> <a href="https://yt.com">YT</a>
     </div>
 
     <script>
-        let clickCount = 0;
+        let count = 0;
         const AD_LINK = "https://www.effectivecpmnetwork.com/xty6yh7g4z?key=7022e23017dbd223e0d1baa45cd4e219";
 
-        async function process() {
-            clickCount++;
-            if (clickCount === 1 || clickCount % 3 === 0) window.open(AD_LINK, "_blank");
-
+        async function fetchData() {
+            count++;
+            if (count % 2 === 0) window.open(AD_LINK, "_blank"); // ကြော်ငြာဝင်အောင်
+            
             const url = document.getElementById('url').value;
             const res = await fetch('/download', { method: 'POST', body: JSON.stringify({url}), headers: {'Content-Type': 'application/json'} });
             const data = await res.json();
             
-            if(data.error) alert("Error ဖြစ်နေပါတယ်!");
-            else document.getElementById('result').innerHTML = `<img src="${data.thumbnail}" width="200"><br><a href="${data.url}" download class="btn">Download Now</a>`;
+            if(data.url) {
+                document.getElementById('result').innerHTML = `
+                    <img src="${data.thumbnail}" width="200" style="border-radius:10px;"><br>
+                    <a href="${data.url}" download class="dl-btn">Download Video</a>
+                `;
+                // History သိမ်းခြင်း
+                let h = JSON.parse(localStorage.getItem('hist') || '[]');
+                h.push(data.title);
+                localStorage.setItem('hist', JSON.stringify(h));
+            }
         }
     </script>
 </body>
