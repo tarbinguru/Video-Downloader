@@ -12,7 +12,11 @@ def index():
 def download():
     url = request.json.get('url')
     try:
-        ydl_opts = {'format': 'best', 'user_agent': 'Mozilla/5.0'}
+        # User-Agent ကို Browser အစစ်အတိုင်းဖြစ်အောင်လုပ်ထားတယ်
+        ydl_opts = {
+            'format': 'best',
+            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+        }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             return jsonify({
