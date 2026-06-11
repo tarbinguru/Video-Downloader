@@ -11,18 +11,18 @@ def index():
 @app.route('/download', methods=['POST'])
 def download():
     url = request.json.get('url')
+    ydl_opts = {
+        'format': 'best',
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    }
     try:
-        # User-Agent ကို Browser အစစ်အတိုင်းဖြစ်အောင်လုပ်ထားတယ်
-        ydl_opts = {
-            'format': 'best',
-            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-        }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             return jsonify({
                 'title': info.get('title'),
                 'thumbnail': info.get('thumbnail'),
-                'url': info.get('url')
+                'url': info.get('url'),
+                'formats': [{'quality': 'HD', 'url': info.get('url')}]
             })
     except Exception as e:
         return jsonify({'error': str(e)})
