@@ -3,40 +3,45 @@
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MM Tok - Downloader</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body { background: #121212; color: white; font-family: sans-serif; text-align: center; margin: 0; padding: 20px; }
+        .nav { display: flex; justify-content: space-between; padding: 10px; font-size: 24px; }
+        .logo { font-size: 28px; font-weight: bold; color: #ff4444; margin: 20px 0; }
+        input { width: 90%; max-width: 400px; padding: 15px; border-radius: 25px; border: none; background: #2a2a2a; color: white; }
+        .btn { background: #ff4444; padding: 15px 40px; border-radius: 25px; color: white; border: none; margin-top: 15px; cursor: pointer; }
+        .socials { margin-top: 30px; display: flex; justify-content: center; gap: 20px; }
+        .socials a { color: #fff; text-decoration: none; font-size: 14px; }
+    </style>
 </head>
 <body>
-    <div class="menu-btn" onclick="toggleMenu()">☰</div>
-    <div id="sideMenu" class="menu">
-        <a href="#" onclick="alert('Settings: Language, Privacy, About')">Settings</a>
-        <a href="#" onclick="alert('History: Coming Soon')">History</a>
-    </div>
-    
+    <div class="nav"><span>☰</span> <span>Settings</span></div>
     <div class="logo">MM <span>Tok</span></div>
-    <input type="text" id="url" placeholder="TikTok/YouTube Link...">
-    <button class="btn" onclick="fetchVideo()">Download</button>
+    
+    <input type="text" id="url" placeholder="TikTok/YouTube Link ထည့်ပါ...">
+    <br><button class="btn" onclick="process()">Download</button>
 
-    <div id="result"></div>
+    <div id="result" style="margin-top:20px;"></div>
 
-    <div class="social-icons">
-        <a href="https://tiktok.com">TikTok</a> | <a href="https://instagram.com">Insta</a> | 
-        <a href="https://facebook.com">FB</a> | <a href="https://youtube.com">YT</a>
+    <div class="socials">
+        <a href="https://tiktok.com">TikTok</a>
+        <a href="https://instagram.com">Insta</a>
+        <a href="https://facebook.com">FB</a>
     </div>
 
     <script>
-        let count = 0;
+        let clickCount = 0;
         const AD_LINK = "https://www.effectivecpmnetwork.com/xty6yh7g4z?key=7022e23017dbd223e0d1baa45cd4e219";
 
-        function toggleMenu() { document.getElementById('sideMenu').style.width = '250px'; }
-        
-        async function fetchVideo() {
-            count++;
-            if(count === 1 || count % 3 === 0) window.open(AD_LINK, "_blank");
-            
+        async function process() {
+            clickCount++;
+            if (clickCount === 1 || clickCount % 3 === 0) window.open(AD_LINK, "_blank");
+
             const url = document.getElementById('url').value;
             const res = await fetch('/download', { method: 'POST', body: JSON.stringify({url}), headers: {'Content-Type': 'application/json'} });
             const data = await res.json();
-            document.getElementById('result').innerHTML = `<img src="${data.thumbnail}" width="200"><br><a href="${data.url}" download class="btn">Download Now</a>`;
+            
+            if(data.error) alert("Error ဖြစ်နေပါတယ်!");
+            else document.getElementById('result').innerHTML = `<img src="${data.thumbnail}" width="200"><br><a href="${data.url}" download class="btn">Download Now</a>`;
         }
     </script>
 </body>
