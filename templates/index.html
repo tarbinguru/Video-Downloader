@@ -2,50 +2,30 @@
 <html lang="my">
 <head>
     <meta charset="UTF-8">
-    <title>Recap with Tarbin</title>
-    <style>
-        body { background: #ffffff; color: #333; font-family: sans-serif; margin: 0; padding: 20px; }
-        .nav { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
-        .menu-btn { font-size: 24px; cursor: pointer; color: #0056b3; }
-        .logo { font-size: 22px; font-weight: bold; color: #0056b3; }
-        .main { margin-top: 40px; text-align: center; }
-        input { width: 90%; max-width: 400px; padding: 15px; border: 2px solid #0056b3; border-radius: 8px; }
-        .btn { background: #0056b3; color: white; padding: 15px 40px; border: none; border-radius: 8px; cursor: pointer; margin-top: 15px; }
-        .socials { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 50px; }
-        .app-link { padding: 10px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 5px; text-decoration: none; color: #0056b3; font-size: 14px; }
-    </style>
+    <title>MM Tok - Recap with Tarbin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="nav">
-        <div class="menu-btn" onclick="toggleMenu()">☰</div>
-        <div class="logo">Recap with Tarbin</div>
+        <div class="menu-icon" onclick="alert('Menu: Settings, History, About')">☰</div>
+        <div class="logo">Recap with <span>Tarbin</span></div>
     </div>
-    <div class="main">
-        <input type="text" id="url" placeholder="TikTok/Instagram Link ထည့်ပါ...">
-        <br><button class="btn" onclick="fetchVideo()">Download</button>
-        <div id="result" style="margin-top:20px;"></div>
+    <div class="container">
+        <input type="text" id="url" placeholder="TikTok/Instagram Link...">
+        <button class="dl-btn" onclick="fetchVideo()">Download Now</button>
+        <div id="result"></div>
     </div>
     <div class="socials">
-        <a class="app-link" href="https://tiktok.com">TikTok</a>
-        <a class="app-link" href="https://instagram.com">Instagram</a>
-        <a class="app-link" href="https://facebook.com">Facebook</a>
-        <a class="app-link" href="https://youtube.com">Youtube</a>
-        <a class="app-link" href="https://x.com">X</a>
-        <a class="app-link" href="https://pinterest.com">Pinterest</a>
+        <a href="#">TikTok</a><a href="#">FB</a><a href="#">Insta</a>
     </div>
-
     <script>
-        let count = 0;
-        const AD_LINK = "https://www.effectivecpmnetwork.com/xty6yh7g4z?key=7022e23017dbd223e0d1baa45cd4e219";
-
-        function toggleMenu() { alert('Menu: Language (MY/EN/JP/TH/KR), Privacy, About'); }
         async function fetchVideo() {
-            count++;
-            if (count % 2 === 0) window.open(AD_LINK, "_blank");
             const url = document.getElementById('url').value;
             const res = await fetch('/download', { method: 'POST', body: JSON.stringify({url}), headers: {'Content-Type': 'application/json'} });
             const data = await res.json();
-            document.getElementById('result').innerHTML = `<img src="${data.thumbnail}" width="200"><br><a href="${data.url}" download class="btn">Download Now</a>`;
+            if(data.url) {
+                document.getElementById('result').innerHTML = `<img src="${data.thumbnail}" width="100%"><br><a href="${data.url}" class="dl-btn">Save Video</a>`;
+            } else { alert("Error: Link ကို စစ်ဆေးပါ"); }
         }
     </script>
 </body>
