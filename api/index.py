@@ -1,4 +1,3 @@
-import os
 from flask import Flask, render_template, request, jsonify
 import yt_dlp
 
@@ -11,6 +10,7 @@ def index():
 @app.route('/download', methods=['POST'])
 def download():
     url = request.json.get('url')
+    # 403 Forbidden error မတက်အောင် User-Agent ကို သေချာထည့်ပေးထားပါတယ်
     ydl_opts = {
         'format': 'best',
         'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
@@ -21,11 +21,10 @@ def download():
             return jsonify({
                 'title': info.get('title'),
                 'thumbnail': info.get('thumbnail'),
-                'url': info.get('url'),
-                'formats': [{'quality': 'HD', 'url': info.get('url')}]
+                'url': info.get('url')
             })
     except Exception as e:
         return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 8080)))
+    app.run()
