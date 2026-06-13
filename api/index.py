@@ -10,10 +10,10 @@ def index():
 @app.route('/download', methods=['POST'])
 def download():
     url = request.json.get('url')
-    # 403 Forbidden error မတက်အောင် User-Agent ကို သေချာထည့်ပေးထားပါတယ်
+    # User-Agent ကို Browser အစစ်အတိုင်းဖြစ်အောင်လုပ်ထားတယ် (403 error မတက်အောင်)
     ydl_opts = {
         'format': 'best',
-        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
     }
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
