@@ -1,54 +1,51 @@
 <!DOCTYPE html>
 <html lang="my">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MM Tok</title>
+    <meta charset="UTF-8">
+    <title>Recap with Tarbin</title>
     <style>
-        body { background: #121212; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
-        .menu-bar { text-align: left; font-size: 24px; cursor: pointer; }
-        .logo { font-size: 32px; font-weight: bold; margin: 30px 0; }
-        .logo span { color: #ff4444; }
-        input { width: 100%; max-width: 400px; padding: 15px; border-radius: 25px; border: none; background: #2a2a2a; color: white; }
-        .dl-btn { background: #ff4444; padding: 15px 40px; border-radius: 25px; border: none; color: white; margin-top: 15px; }
-        .socials { display: flex; justify-content: center; gap: 15px; margin-top: 40px; }
-        .history-item { margin: 10px; padding: 10px; background: #333; border-radius: 10px; }
+        body { background: #ffffff; color: #333; font-family: sans-serif; margin: 0; padding: 20px; }
+        .nav { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid #ddd; }
+        .menu-btn { font-size: 24px; cursor: pointer; color: #0056b3; }
+        .logo { font-size: 22px; font-weight: bold; color: #0056b3; }
+        .main { margin-top: 40px; text-align: center; }
+        input { width: 90%; max-width: 400px; padding: 15px; border: 2px solid #0056b3; border-radius: 8px; }
+        .btn { background: #0056b3; color: white; padding: 15px 40px; border: none; border-radius: 8px; cursor: pointer; margin-top: 15px; }
+        .socials { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 50px; }
+        .app-link { padding: 10px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 5px; text-decoration: none; color: #0056b3; font-size: 14px; }
     </style>
 </head>
 <body>
-    <div class="menu-bar" onclick="alert('Settings: Language/Theme | About: MM Tok v1.0')">☰</div>
-    <div class="logo">MM <span>Tok</span></div>
-    
-    <input type="text" id="url" placeholder="TikTok/YouTube Link...">
-    <br><button class="dl-btn" onclick="fetchData()">Download</button>
-
-    <div id="result" style="margin-top:20px;"></div>
-
+    <div class="nav">
+        <div class="menu-btn" onclick="toggleMenu()">☰</div>
+        <div class="logo">Recap with Tarbin</div>
+    </div>
+    <div class="main">
+        <input type="text" id="url" placeholder="TikTok/Instagram Link ထည့်ပါ...">
+        <br><button class="btn" onclick="fetchVideo()">Download</button>
+        <div id="result" style="margin-top:20px;"></div>
+    </div>
     <div class="socials">
-        <a href="https://tiktok.com">TikTok</a> <a href="https://fb.com">FB</a> <a href="https://yt.com">YT</a>
+        <a class="app-link" href="https://tiktok.com">TikTok</a>
+        <a class="app-link" href="https://instagram.com">Instagram</a>
+        <a class="app-link" href="https://facebook.com">Facebook</a>
+        <a class="app-link" href="https://youtube.com">Youtube</a>
+        <a class="app-link" href="https://x.com">X</a>
+        <a class="app-link" href="https://pinterest.com">Pinterest</a>
     </div>
 
     <script>
         let count = 0;
         const AD_LINK = "https://www.effectivecpmnetwork.com/xty6yh7g4z?key=7022e23017dbd223e0d1baa45cd4e219";
 
-        async function fetchData() {
+        function toggleMenu() { alert('Menu: Language (MY/EN/JP/TH/KR), Privacy, About'); }
+        async function fetchVideo() {
             count++;
-            if (count % 2 === 0) window.open(AD_LINK, "_blank"); // ကြော်ငြာဝင်အောင်
-            
+            if (count % 2 === 0) window.open(AD_LINK, "_blank");
             const url = document.getElementById('url').value;
             const res = await fetch('/download', { method: 'POST', body: JSON.stringify({url}), headers: {'Content-Type': 'application/json'} });
             const data = await res.json();
-            
-            if(data.url) {
-                document.getElementById('result').innerHTML = `
-                    <img src="${data.thumbnail}" width="200" style="border-radius:10px;"><br>
-                    <a href="${data.url}" download class="dl-btn">Download Video</a>
-                `;
-                // History သိမ်းခြင်း
-                let h = JSON.parse(localStorage.getItem('hist') || '[]');
-                h.push(data.title);
-                localStorage.setItem('hist', JSON.stringify(h));
-            }
+            document.getElementById('result').innerHTML = `<img src="${data.thumbnail}" width="200"><br><a href="${data.url}" download class="btn">Download Now</a>`;
         }
     </script>
 </body>
